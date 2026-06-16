@@ -1,0 +1,22 @@
+# Environment files
+backend/ai-service/.env
+
+# Virtual environment
+backend/ai-service/venv/
+
+# Node modules
+frontend/node_modules/
+
+# Build files
+frontend/dist/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# HuggingFace model cache
+.cache/
+
+# VS Code
+.vscode/
