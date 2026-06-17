@@ -30,7 +30,7 @@ def get_profile(user_id: str = Depends(verify_token)):
 # ── UPDATE PROFILE ──
 @router.put("/update")
 def update_profile(data: UpdateProfileModel, user_id: str = Depends(verify_token)):
-    update_data = {k: v for k, v in data.dict().items() if v is not None}
+    update_data = {k: v for k, v in data.dict().items() if v is not None and v != ""}
     if not update_data:
         raise HTTPException(status_code=400, detail="Nothing to update!")
     users_collection.update_one(

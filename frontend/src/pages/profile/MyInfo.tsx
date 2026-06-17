@@ -18,8 +18,21 @@ const MyInfo = () => {
   const [editingField, setEditingField] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const updated = { ...formData, [e.target.name]: e.target.value }
+    setFormData(updated)
+    setHasChanges(JSON.stringify(updated) !== JSON.stringify(originalData))
   }
+
+  const [hasChanges, setHasChanges] = useState(false)
+const [originalData, setOriginalData] = useState({
+    name: '',
+    email: '',
+    dob: '',
+    gender: '',
+    phone: '',
+    friendContact: ''
+  })
+
 
   // Load user data on mount
 useEffect(() => {
@@ -27,21 +40,21 @@ useEffect(() => {
       try {
         const response = await api.get('/api/user/me')
         const user = response.data
-        setFormData({
+        const loaded = {
           name: user.name || '',
           email: user.email || '',
           dob: user.dob || '',
           gender: user.gender || '',
           phone: user.phone || '',
           friendContact: user.friendEmail || ''
-        })
+        }
+        setFormData(loaded)
+        setOriginalData(loaded)
       } catch (error) {
         console.error('Failed to load profile', error)
       }
     }
     loadProfile()
-
-    // Load profile pic from localStorage
     const pic = localStorage.getItem('dayra_profile_pic')
     if (pic) setProfilePic(pic)
   }, [])
@@ -292,14 +305,24 @@ const handleSave = async () => {
 
         </div>
 
-        {/* SAVE BUTTON */}
-        <button
-          onClick={handleSave}
-          className="w-48 sm:w-56 py-3 rounded-full text-white font-semibold text-base sm:text-lg transition-opacity hover:opacity-90 mt-2"
-          style={{ backgroundColor: '#4A9B6F' }}
-        >
-          Save
-        </button>
+        {/* BACK / SAVE BUTTON */}
+{hasChanges ? (
+  <button
+    onClick={handleSave}
+    className="w-48 sm:w-56 py-3 rounded-full text-white font-semibold text-base sm:text-lg transition-opacity hover:opacity-90 mt-2"
+    style={{ backgroundColor: '#4A9B6F' }}
+  >
+    💾 Save Changes
+  </button>
+) : (
+  <button
+    onClick={() => navigate('/home')}
+    className="w-48 sm:w-56 py-3 rounded-full text-white font-semibold text-base sm:text-lg transition-opacity hover:opacity-90 mt-2"
+    style={{ backgroundColor: '#888' }}
+  >
+    ← Back
+  </button>
+)}
 
       </div>
     </div>

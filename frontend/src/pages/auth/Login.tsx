@@ -11,6 +11,8 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+const [showError, setShowError] = useState(false)
 
   useEffect(() => {
     if (location.state?.signupSuccess) {
@@ -40,7 +42,9 @@ const Login = () => {
       localStorage.setItem('dayra_user', JSON.stringify(response.data.user))
       navigate('/home')
     } catch (error: any) {
-      alert(error.response?.data?.detail || 'Login failed! Please try again.')
+      setErrorMessage(error.response?.data?.detail || 'Login failed! Please try again.')
+      setShowError(true)
+      setTimeout(() => setShowError(false), 3000)
     }
   }
 
@@ -68,6 +72,20 @@ const Login = () => {
         className="w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-lg p-6 sm:p-10 flex flex-col md:flex-row gap-6 sm:gap-10"
         style={{ backgroundColor: '#FAF7F2' }}
       >
+
+{/* ERROR TOAST */}
+<div
+  className="fixed top-6 left-1/2 z-50 px-6 py-3 rounded-full shadow-lg flex items-center gap-2 text-sm sm:text-base font-semibold transition-all duration-700"
+  style={{
+    transform: `translateX(-50%) translateY(${showError ? '0px' : '-20px'})`,
+    opacity: showError ? 1 : 0,
+    pointerEvents: 'none',
+    backgroundColor: '#FFE5E5',
+    color: '#C0392B'
+  }}
+>
+  ❌ {errorMessage}
+</div>
 
         {/* LEFT SIDE */}
         <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-4 sm:gap-6">
