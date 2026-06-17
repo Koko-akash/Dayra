@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Base axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'https://handsaw-truffle-subgroup.ngrok-free.dev',
   headers: {
     'Content-Type': 'application/json',
   },
