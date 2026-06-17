@@ -17,7 +17,7 @@ app = FastAPI(
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://handsaw-truffle-subgroup.ngrok-free.dev", "https://dayra.vercel.app"],
+    allow_origins=["http://localhost:5173", "https://handsaw-truffle-subgroup.ngrok-free.dev", "https://dayra-pink.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
