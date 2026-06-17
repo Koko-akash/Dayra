@@ -16,6 +16,7 @@ def user_to_dict(user):
         "gender": user.get("gender", ""),
         "phone": user.get("phone", ""),
         "friendEmail": user.get("friendEmail", ""),
+        "profilePic": user.get("profilePic", ""),
         "createdAt": user.get("createdAt", "")
     }
 

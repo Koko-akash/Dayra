@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from '../../assets/Dayra_Main_Logo.png'
-
+import api from '../../api/axios'
 import diaryIcon from '../../assets/Dayra_diary_icon.png'
 import plannerIcon from '../../assets/Dayra_planner_icon.png'
 import pomoIcon from '../../assets/Dayra_pomo_icon.png'
@@ -46,13 +46,28 @@ const Homepage = () => {
 const [profilePic, setProfilePic] = useState<string | null>(null)
 
 useEffect(() => {
-    const user = localStorage.getItem('dayra_user')
-    if (user) {
-      const parsed = JSON.parse(user)
-      setUserName(parsed.name?.split(' ')[0] || 'User')
+    const loadUserData = async () => {
+      try {
+        const response = await api.get('/api/user/me')
+        const user = response.data
+        setUserName(user.name?.split(' ')[0] || 'User')
+        if (user.profilePic) {
+          setProfilePic(user.profilePic)
+          localStorage.setItem('dayra_profile_pic', user.profilePic)
+        }
+        localStorage.setItem('dayra_user', JSON.stringify(user))
+      } catch (error) {
+        // Fallback to localStorage
+        const saved = localStorage.getItem('dayra_user')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          setUserName(parsed.name?.split(' ')[0] || 'User')
+        }
+        const pic = localStorage.getItem('dayra_profile_pic')
+        if (pic) setProfilePic(pic)
+      }
     }
-    const pic = localStorage.getItem('dayra_profile_pic')
-    if (pic) setProfilePic(pic)
+    loadUserData()
   }, [])
 
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]

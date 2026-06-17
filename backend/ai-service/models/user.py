@@ -24,3 +24,4 @@ class UpdateProfileModel(BaseModel):
     gender: Optional[str] = None
     phone: Optional[str] = None
     friendEmail: Optional[str] = None
+    profilePic: Optional[str] = None

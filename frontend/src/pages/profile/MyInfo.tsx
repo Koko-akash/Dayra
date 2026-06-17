@@ -41,15 +41,21 @@ useEffect(() => {
         const response = await api.get('/api/user/me')
         const user = response.data
         const loaded = {
-          name: user.name || '',
-          email: user.email || '',
-          dob: user.dob || '',
-          gender: user.gender || '',
-          phone: user.phone || '',
-          friendContact: user.friendEmail || ''
-        }
-        setFormData(loaded)
-        setOriginalData(loaded)
+  name: user.name || '',
+  email: user.email || '',
+  dob: user.dob || '',
+  gender: user.gender || '',
+  phone: user.phone || '',
+  friendContact: user.friendEmail || ''
+}
+setFormData(loaded)
+setOriginalData(loaded)
+
+// Load profile pic from MongoDB
+if (user.profilePic) {
+  setProfilePic(user.profilePic)
+  localStorage.setItem('dayra_profile_pic', user.profilePic)
+}
       } catch (error) {
         console.error('Failed to load profile', error)
       }
@@ -66,14 +72,21 @@ const handleSave = async () => {
         dob: formData.dob,
         gender: formData.gender,
         phone: formData.phone,
-        friendEmail: formData.friendContact
+        friendEmail: formData.friendContact,
+        profilePic: profilePic || ''
       })
-      // Update localStorage with new name instantly!!
+      // Update localStorage
       const existingUser = JSON.parse(localStorage.getItem('dayra_user') || '{}')
       localStorage.setItem('dayra_user', JSON.stringify({
         ...existingUser,
-        name: formData.name
+        name: formData.name,
+        profilePic: profilePic || ''
       }))
+      if (profilePic) {
+        localStorage.setItem('dayra_profile_pic', profilePic)
+      } else {
+        localStorage.removeItem('dayra_profile_pic')
+      }
       navigate('/home')
     } catch (error: any) {
       alert(error.response?.data?.detail || 'Failed to update profile!')
@@ -84,10 +97,11 @@ const handleSave = async () => {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const result = reader.result as string
         setProfilePic(result)
         localStorage.setItem('dayra_profile_pic', result)
+        setHasChanges(true)
       }
       reader.readAsDataURL(file)
     }
